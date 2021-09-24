@@ -12,7 +12,9 @@ const web3 = new Web3({
   privateKey: '0x...'
 });
 
-console.log(await web3.contract('WBNB').totalSupply());
+(async () => {
+  console.log(await web3.contract('WBNB').totalSupply());
+})();
 ```
 
 ## Install
