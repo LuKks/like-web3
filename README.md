@@ -29,7 +29,7 @@ https://bsc-dataseed.binance.org
 wss://bsc-ws-node.nariox.org:443
 ```
 
-Looking for a stable WebSocket provider? I recommend https://moralis.io/
+Looking for a stable WebSocket provider? It's free: https://moralis.io/
 
 #### Testnet
 ```
