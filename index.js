@@ -214,6 +214,8 @@ LikeWeb3.prototype.broadcast = async function (txData) {
 // web3.contract('PANCAKESWAP_FACTORY').getPair(['0x123', '0x456']);
 // web3.contract('PANCAKESWAP_ROUTER').getAmountsOut(amountIn, [from, to]);
 LikeWeb3.prototype.contract = function (contractAddress, abi) {
+  const self = this;
+
   let CONTRACT = CONTRACTS[contractAddress];
   if (!CONTRACT) {
     abi = abi || CONTRACTS.GENERIC_TOKEN.abi;
@@ -224,11 +226,13 @@ LikeWeb3.prototype.contract = function (contractAddress, abi) {
 
   let funcs = {};
   for (let key in contractAny.methods) {
-    funcs[key] = function () {
-      let args = [...arguments];
-      args = this.argsToHex(args);
+    let copy = contractAny.methods[key];
 
-      return (contractAny.methods[key].apply(this, args)).call();
+    funcs[key] = async function () {
+      let args = [...arguments];
+      args = self.argsToHex(args);
+
+      return (copy.apply(this, args)).call();
     }
     contractAny.methods[key] = funcs[key];
   }
@@ -346,7 +350,7 @@ LikeWeb3.prototype.estimateGasPrice = async function ({ from, to, value, data, g
 LikeWeb3.prototype.argsToHex = function (args) {
   return args.map(arg => {
     if (Array.isArray(arg)) {
-      return arg.map(this.argsToHex);
+      return this.argsToHex(args);
     }
     return this.web3.utils.toHex(arg);
   });
