@@ -350,7 +350,7 @@ LikeWeb3.prototype.estimateGasPrice = async function ({ from, to, value, data, g
 LikeWeb3.prototype.argsToHex = function (args) {
   return args.map(arg => {
     if (Array.isArray(arg)) {
-      return this.argsToHex(args);
+      return this.argsToHex(arg);
     }
     return this.web3.utils.toHex(arg);
   });
