@@ -368,12 +368,12 @@ LikeWeb3.prototype.argsToHex = function (args) {
   });
 }
 
-// web3.toWei('0.01', 18); // ie. WBNB (18 decimals) => 10000000000000000
+// web3.toWei('0.01', 18); // ie. WBNB (18 decimals) => '10000000000000000'
 LikeWeb3.prototype.toWei = function (amount, decimals) {
   return new Decimal(amount).mul(10 ** decimals).toFixed(0);
 }
 
-// web3.fromWei('10000000000000000', 18); // ie. WBNB (18 decimals) => 0.01
+// web3.fromWei('10000000000000000', 18); // ie. WBNB (18 decimals) => '0.01'
 LikeWeb3.prototype.fromWei = function (amount, decimals) {
   return new Decimal(amount).div(10 ** decimals).toFixed();
 }
