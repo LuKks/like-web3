@@ -70,7 +70,7 @@ let tx = await web3.transaction('PANCAKESWAP_ROUTER', {
 });
 console.log('here tx is valid and it would succeed (estimate gas limit not failed)');
 
-tx = await tx.send();
+tx = await tx.send(); // make sure to send() otherwise tx will not happen
 console.log('swap hash', tx.transactionHash);
 
 let receipt = await tx.wait(); // wait for 1 confirmation and return tx details
