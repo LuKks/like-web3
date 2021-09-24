@@ -220,10 +220,11 @@ LikeWeb3.prototype.broadcast = async function (txData) {
   };
 }
 
-// web3.contract('0xa1b2c3').name();
-// web3.contract('0xa1b2c3').decimals();
-// web3.contract('0xa1b2c3').totalSupply();
-// web3.contract('PANCAKESWAP_FACTORY').getPair(['0x123', '0x456']);
+// web3.contract('0xa1b2c3').name(); // Wrapped BNB
+// web3.contract('0xa1b2c3').decimals(); // '18'
+// web3.contract('0xa1b2c3').totalSupply(); // '99999...'
+// web3.contract('0xa1b2c3').allowance(web3.wallet.address, web3.CONTRACTS.PANCAKESWAP_ROUTER); // '10000000000000000'
+// web3.contract('PANCAKESWAP_FACTORY').getPair('0x123', '0x456');
 // web3.contract('PANCAKESWAP_ROUTER').getAmountsOut(amountIn, [from, to]);
 LikeWeb3.prototype.contract = function (contractAddress, abi) {
   const self = this;
