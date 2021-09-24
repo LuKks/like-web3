@@ -47,6 +47,9 @@ function LikeWeb3 ({ providers, testnet, privateKey }) {
   EventEmitter.call(this);
 
   // pool of nodes
+  if (!providers || !providers.length) {
+    providers = ['https://bsc-dataseed.binance.org'];
+  }
   let provider = providers[0];
 
   // detect provider protocol
