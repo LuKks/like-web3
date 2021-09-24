@@ -30,7 +30,7 @@ wss://bsc-ws-node.nariox.org:443
 ```
 
 Looking for a stable WebSocket provider? I recommend to create an account here:\
-https://admin.moralis.io/register
+https://admin.moralis.io/register \
 Then you create an endpoint like this one:\
 `wss://speedy-nodes-nyc.moralis.io/d4684f47341b442165fc8c9e/bsc/mainnet/ws`
 
@@ -41,7 +41,7 @@ https://data-seed-prebsc-1-s1.binance.org:8545
 Moralis.io also gives you a testnet WebSocket provider.
 
 #### Notes
-It only supports HTTP and WebSocket providers.
+It only supports HTTP and WebSocket providers.\
 The default provider is `https://bsc-dataseed.binance.org`.
 
 ## Examples
