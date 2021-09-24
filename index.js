@@ -419,27 +419,27 @@ LikeWeb3.prototype.decodeSwap = async function ({ method, txValue }) {
 
 // web3.getTokenDecimals('0xa1b2c3'); // => '18'
 const cacheDecimals = {};
-LikeWeb3.prototype.getTokenDecimals = async function (address) {
-  if (cacheDecimals[address]) {
-    return cacheDecimals[address];
+LikeWeb3.prototype.getTokenDecimals = async function (tokenAddress) {
+  if (cacheDecimals[tokenAddress]) {
+    return cacheDecimals[tokenAddress];
   }
 
-  let token = new this.web3.eth.Contract(CONTRACTS.GENERIC_TOKEN.abi, address);
+  let token = new this.web3.eth.Contract(CONTRACTS.GENERIC_TOKEN.abi, tokenAddress);
   let decimals = await token.methods.decimals().call();
-  cacheDecimals[address] = decimals;
+  cacheDecimals[tokenAddress] = decimals;
   return decimals;
 }
 
 // web3.getTokenName('0xa1b2c3'); // => 'Wrapped BNB'
 const cacheNames = {};
-LikeWeb3.prototype.getTokenName = async function (address) {
-  if (cacheNames[address]) {
-    return cacheNames[address];
+LikeWeb3.prototype.getTokenName = async function (tokenAddress) {
+  if (cacheNames[tokenAddress]) {
+    return cacheNames[tokenAddress];
   }
 
-  let token = new this.web3.eth.Contract(CONTRACTS.GENERIC_TOKEN.abi, address);
+  let token = new this.web3.eth.Contract(CONTRACTS.GENERIC_TOKEN.abi, tokenAddress);
   let name = await token.methods.name().call();
-  cacheNames[address] = name;
+  cacheNames[tokenAddress] = name;
   return name;
 }
 
