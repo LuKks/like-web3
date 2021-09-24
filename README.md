@@ -82,7 +82,7 @@ console.log('receipt', receipt.status);
 await web3.contract('0xa1b2c3').name();
 await web3.contract('0xa1b2c3').decimals();
 await web3.contract('0xa1b2c3').totalSupply();
-await web3.contract('PANCAKESWAP_FACTORY').getPair(['0x123', '0x456']);
+await web3.contract('PANCAKESWAP_FACTORY').getPair('0x123', '0x456');
 await web3.contract('PANCAKESWAP_ROUTER').getAmountsOut(amountIn, [from, to]);
 ```
 
