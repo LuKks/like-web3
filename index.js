@@ -125,14 +125,9 @@ console.log(await tx.wait()); // wait for 1 confirmation and return transaction 
 LikeWeb3.prototype.transaction = async function (contract, { abi, method, args, from, to, value, nonce, gasPrice, gasLimit, privateKey }) {
   let data;
   if (method) {
-    let CONTRACT = CONTRACTS[contract];
-    if (!CONTRACT) {
-      abi = abi || CONTRACTS.GENERIC_TOKEN.abi;
-      CONTRACT = { abi, address: contract };
-    }
-
     args = this.argsToHex(args);
 
+    let CONTRACT = _nameToContract(contract, abi);
     let contractAny = new this.web3.eth.Contract(CONTRACT.abi, CONTRACT.address);
     data = contractAny.methods[method](...args).encodeABI();
   }
@@ -229,12 +224,7 @@ LikeWeb3.prototype.broadcast = async function (txData) {
 LikeWeb3.prototype.contract = function (contractAddress, abi) {
   const self = this;
 
-  let CONTRACT = CONTRACTS[contractAddress];
-  if (!CONTRACT) {
-    abi = abi || CONTRACTS.GENERIC_TOKEN.abi;
-    CONTRACT = { abi, address: contractAddress };
-  }
-
+  let CONTRACT = _nameToContract(contractAddress, abi);
   let contractAny = new this.web3.eth.Contract(CONTRACT.abi, CONTRACT.address);
 
   let funcs = {};
@@ -517,4 +507,13 @@ LikeWeb3.prototype.getReserves = async function (factory, pair) {
 
 function sleep (ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function _nameToContract (contract, abi) {
+  let CONTRACT = CONTRACTS[contract];
+  if (!CONTRACT) {
+    abi = abi || CONTRACTS.GENERIC_TOKEN.abi;
+    CONTRACT = { abi, address: contract };
+  }
+  return CONTRACT;
 }
