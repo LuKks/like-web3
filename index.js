@@ -457,6 +457,16 @@ LikeWeb3.prototype.getPair = async function (factory, pair) {
   return pairAddress;
 }
 
+// web3.allowance('WBNB', { sender: web3.wallet.address, spender: web3.CONTRACTS.PANCAKESWAP_ROUTER }); '0.01'
+LikeWeb3.prototype.allowance = async function (tokenAddress, { sender, spender }) {
+  let tokenContract = new web3.eth.Contract(CONTRACTS.GENERIC_TOKEN.abi, tokenAddress);
+  let [allowanceLimit, decimals] = await Promise.all([
+    tokenContract.methods.allowance(sender, spender).call(),
+    this.getTokenDecimals(tokenAddress),
+  ];
+  return this.fromWei(allowanceLimit, decimals);
+}
+
 //
 LikeWeb3.prototype.getReserves = async function (factory, pair) {
   let factoryContract = new this.web3.eth.Contract(CONTRACTS[factory].abi, CONTRACTS[factory].address);
