@@ -458,6 +458,24 @@ LikeWeb3.prototype.allowance = async function (contract, { sender, spender }) {
   ];
   return this.fromWei(amount, decimals);
 }
+
+// web3.approve('WBNB', { spender: '0xpancake', amount: '0.01', nonce: 1 });
+LikeWeb3.prototype.approve = async function (contract, { spender, amount, from, nonce, gasPrice, gasLimit, privateKey }) {
+  let CONTRACT = _nameToContract(contract);
+  let decimals = await this.getTokenDecimals(CONTRACT.address);
+  return this.transaction(contract, {
+    method: 'approve',
+    args: [
+      spender, // ie. pancakeswap router
+      this.toWei(amount, decimals) // ie. wbnb amount in wei
+    ],
+    from,
+    to: contract,
+    nonce,
+    gasPrice,
+    gasLimit,
+    privateKey
+  });
 }
 
 //
