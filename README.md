@@ -107,8 +107,8 @@ web3.on('pendingTransactions', (err, transactionHash, tx) => {
 #### Util
 ```javascript
 // wei
-web3.toWei('0.01', 18); // ie. WBNB (18 decimals) => 10000000000000000
-web3.fromWei('10000000000000000', 18); // ie. WBNB (18 decimals) => 0.01
+web3.toWei('0.01', 18); // ie. WBNB (18 decimals) => '10000000000000000'
+web3.fromWei('10000000000000000', 18); // ie. WBNB (18 decimals) => '0.01'
 
 //
 let method = web3.decodeMethod(tx.input); // => { name: 'swapExactETHForTokens', ... }
@@ -118,6 +118,20 @@ let swap = await web3.decodeSwap({ method, txValue: tx.value }); // => { amountI
 await web3.getTokenDecimals('0xa1b2c3'); // => '18'
 await web3.getTokenName('0xa1b2c3'); // => 'Wrapped BNB'
 await web3.getPair('PANCAKESWAP_FACTORY', ['0x123', '0x456']); // => '0x42f6f...'
+
+// others
+await web3.allowance('WBNB', { sender: web3.wallet.address, spender: web3.CONTRACTS.PANCAKESWAP_ROUTER }); // => '0.01'
+let tx = await web3.approve('WBNB', { spender: '0xpancake', amount: '0.01', nonce: 1 }); // needs to tx.send(), etc
+
+// pair
+await web3.getReserves('PANCAKESWAP_FACTORY', ['0x123', '0x456']); /* => {
+  factory: 'PANCAKESWAP_FACTORY',
+  price: '0.000961972605218793131889669063837',
+  '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c': '175.809168109429715411',
+  '0x42f6f551ae042cbe50c739158b4f0cac0edb9096': '182759.017414475433642737',
+  blockTimestamp: '1632428882',
+  decimals: [Array]
+}*/
 ```
 
 #### Methods from original web3
@@ -129,9 +143,22 @@ let receipt = await web3.eth.getTransaction(transactionHash);
 
 #### Add more named contracts
 ```javascript
+// single
 Web3.addContract('PANCAKESWAP_FACTORY', {
-  address: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',
+  address: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',
   abi: [...]
+});
+
+// multiple
+Web3.addContract({
+  PANCAKESWAP_FACTORY: {
+    address: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',
+    abi: [...]
+  },
+  PANCAKESWAP_ROUTER: {
+    address: '0x10ED43C718714eb63d5aA57B78B54704E256024E',
+    abi: [...]
+  }
 });
 ```
 
