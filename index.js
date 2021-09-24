@@ -22,6 +22,7 @@ const EthCommon = require('ethereumjs-common').default;
 const abiDecoder = require('abi-decoder');
 const LikeEmitter = require('like-events');
 const events = require('events');
+const util = require('util');
 const Decimal = require('decimal.js');
 const CONTRACTS = require('./contracts-list.js');
 
@@ -439,4 +440,8 @@ LikeWeb3.prototype.getPair = async function (factory, pair) {
   let pairAddress = await factoryContract.methods.getPair(pair[0], pair[1]).call();
   cachePairs[key] = pairAddress;
   return pairAddress;
+}
+
+function sleep (ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
