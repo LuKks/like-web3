@@ -2,7 +2,7 @@
 
 Common Web3/BSC for Node.js
 
-![](https://img.shields.io/npm/v/like-web3.svg) ![](https://img.shields.io/npm/dt/like-web3.svg) ![](https://img.shields.io/badge/tested_with-tap-e683ff.svg) ![](https://img.shields.io/github/license/LuKks/like-mysql.svg)
+![](https://img.shields.io/npm/v/like-web3.svg) ![](https://img.shields.io/npm/dt/like-web3.svg) ![](https://img.shields.io/badge/tested_with-tap-e683ff.svg) ![](https://img.shields.io/github/license/LuKks/like-web3.svg)
 
 ```javascript
 const Web3 = require('like-web3');
