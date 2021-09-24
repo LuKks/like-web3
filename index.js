@@ -448,6 +448,53 @@ LikeWeb3.prototype.getPair = async function (factory, pair) {
   return pairAddress;
 }
 
+//
+LikeWeb3.prototype.getReserves = async function (factory, pair) {
+  let factoryContract = new this.web3.eth.Contract(CONTRACTS[factory].abi, CONTRACTS[factory].address);
+
+  let [decimals0, decimals1, pairAddress] = await Promise.all([
+    this.getTokenDecimals(pair[0]),
+    this.getTokenDecimals(pair[1]),
+    this.getPair(factory, pair)
+  ]);
+
+  if (!pairAddress || pairAddress === '0x0000000000000000000000000000000000000000') {
+    return {
+      factory,
+      price: '0',
+      [pair[0]]: this.fromWei(0, decimals0),
+      [pair[1]]: this.fromWei(0, decimals1),
+      blockTimestamp: 0,
+    };
+  }
+
+  let pairContract = new this.web3.eth.Contract(CONTRACTS.PANCAKESWAP_PAIR.abi, pairAddress);
+  let reserves = await pairContract.methods.getReserves().call();
+
+  // let orderedPair = parseInt(pair[0]) < parseInt(pair[1]) ? [pair[0], pair[1]] : [pair[1], pair[0]];
+  let orderedPair = new Decimal(pair[0]).lt(pair[1]) ? [pair[0], pair[1]] : [pair[1], pair[0]];
+  // let orderedPair = await pairContract.methods.sortTokens(pair[0], pair[1]).call();
+  // console.log('not oredered', pair);
+  // console.log('orderedPair', orderedPair);
+  // pair = orderedPair;
+
+  reserves = {
+    factory,
+    // pair,
+    // pairAddress,
+    // _reserve0: reserves._reserve0,
+    // _reserve1: reserves._reserve1,
+    price: 0.0,
+    [pair[0]]: this.fromWei(pair[0] === orderedPair[0] ? reserves._reserve0 : reserves._reserve1, decimals0),
+    [pair[1]]: this.fromWei(pair[0] === orderedPair[0] ? reserves._reserve1 : reserves._reserve0, decimals1),
+    blockTimestamp: reserves._blockTimestampLast,
+    decimals: [decimals0, decimals1],
+  };
+  reserves.price = (new Decimal(reserves[pair[0]]).div(reserves[pair[1]])).toFixed();
+
+  return reserves;
+}
+
 function sleep (ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
