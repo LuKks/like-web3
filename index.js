@@ -20,8 +20,7 @@ const Web3 = require('web3');
 const Tx = require('ethereumjs-tx').Transaction;
 const EthCommon = require('ethereumjs-common').default;
 const abiDecoder = require('abi-decoder');
-const LikeEmitter = require('like-events');
-const events = require('events');
+const EventEmitter = require('events').EventEmitter;
 const util = require('util');
 const Decimal = require('decimal.js');
 const CONTRACTS = require('./contracts-list.js');
@@ -45,7 +44,7 @@ function LikeWeb3 ({ providers, testnet, privateKey }) {
     return new LikeWeb3(opts);
   }
 
-  events.LikeEmitter.call(this);
+  EventEmitter.call(this);
 
   // pool of nodes
   let provider = providers[0];
@@ -81,7 +80,7 @@ function LikeWeb3 ({ providers, testnet, privateKey }) {
   }
 }
 
-util.inherits(LikeWeb3, events.LikeEmitter);
+util.inherits(LikeWeb3, EventEmitter);
 
 LikeWeb3.CONTRACTS = CONTRACTS;
 
