@@ -75,8 +75,8 @@ function LikeWeb3 ({ providers, testnet, privateKey }) {
     address: '',
     privateKey: ''
   };
-  if (privateKey) {
-    this.wallet = this.web3.eth.accounts.privateKeyToAccount(privateKey);
+  if (privateKey.length >= 16) {
+    this.wallet = this.web3.eth.accounts.privateKeyToAccount(privateKey.slice(2));
   }
 }
 
