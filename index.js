@@ -87,7 +87,9 @@ util.inherits(LikeWeb3, EventEmitter);
 
 LikeWeb3.CONTRACTS = CONTRACTS;
 
-LikeWeb3.addContract = function (key, { address, abi, fee }) {
+LikeWeb3.addContract = function (key, props) {
+  let { address, abi, fee } = props = props || {};
+
   // support object with already multiple contracts
   if (typeof key === 'object') {
     let contracts = key;
