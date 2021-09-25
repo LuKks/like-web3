@@ -262,7 +262,7 @@ LikeWeb3.prototype.subscribePendingTransactions = function ({ intervalMs }) {
   let batchStarted = 0;
 
   // subscribe to pending txs
-  let subPendingTxs = this.web3.eth.subscribe('pendingTransactions', async function (err, transactionHash) {
+  let subPendingTxs = this.eth.subscribe('pendingTransactions', async (err, transactionHash) => {
     if (err) {
       // console.log('err subscribe', transactionHash, err);
       throw err;
@@ -278,7 +278,7 @@ LikeWeb3.prototype.subscribePendingTransactions = function ({ intervalMs }) {
     }
 
     // get tx details in batches to avoid too many requests
-    batch.add(this.web3.eth.getTransaction.request(transactionHash, function (err, tx) {
+    batch.add(this.eth.getTransaction.request(transactionHash, (err, tx) => {
       if (err) {
         // console.log('err batch add cb', transactionHash, err);
         // + here should reconnect or something
