@@ -349,8 +349,8 @@ LikeWeb3.prototype.estimateGasPrice = async function ({ from, to, value, data, g
   }
 
   // console.log('bef gas', { gasPrice, gasLimit });
-  gasPrice = this.web3.utils.toHex(this.web3.utils.toWei(gasPrice, 'gwei'));
-  gasLimit = this.web3.utils.toHex(gasLimit);
+  gasPrice = this.web3.utils.toHex(this.web3.utils.toWei(gasPrice.toString(), 'gwei'));
+  gasLimit = this.web3.utils.toHex(gasLimit.toString());
   // console.log('aft gas', { gasPrice, gasLimit });
   return { gasPrice, gasLimit };
 }
