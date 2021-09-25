@@ -138,9 +138,16 @@ LikeWeb3.prototype.transaction = async function (contract, { abi, method, args, 
     to = CONTRACTS[to].address;
   }
 
-  if (!privateKey && this.wallet.privateKey) {
+  if (privateKey) {
+    let wallet = this.web3.eth.accounts.privateKeyToAccount(privateKey.slice(2));
+    if (from && from !== wallet.address) {
+      throw new Error('"from" address is not linked to "privateKey" arg');
+    }
+    privateKey = wallet.privateKey;
+    from = wallet.address;
+  } else if (this.wallet.privateKey) {
     if (from && from !== this.wallet.address) {
-      throw new Error('you need to set "privateKey" of the "from" arg or remove the "from" arg');
+      throw new Error('"from" address is not linked to "privateKey" global');
     }
     privateKey = this.wallet.privateKey;
     from = this.wallet.address;
