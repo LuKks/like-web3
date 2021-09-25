@@ -260,7 +260,7 @@ web3.on('pendingTransactions', (err, transactionHash, tx) => {
   console.log(transactionHash, 'tx', tx);
 });
 
-// subscription.unsubscribe();
+// await subscription.disconnect();
 */
 LikeWeb3.prototype.subscribePendingTransactions = function ({ intervalMs }) {
   intervalMs = intervalMs === undefined ? 50 : intervalMs;
