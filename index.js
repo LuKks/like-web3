@@ -139,7 +139,7 @@ LikeWeb3.prototype.transaction = async function (contract, { abi, method, args, 
   }
 
   if (!privateKey && this.wallet.privateKey) {
-    if (from !== this.wallet.address) {
+    if (from && from !== this.wallet.address) {
       throw new Error('you need to set "privateKey" of the "from" arg or remove the "from" arg');
     }
     privateKey = this.wallet.privateKey;
