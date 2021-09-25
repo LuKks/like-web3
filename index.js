@@ -367,7 +367,7 @@ LikeWeb3.prototype.argsToHex = function (args) {
 
 // web3.toWei('0.01', 18); // ie. WBNB (18 decimals) => '10000000000000000'
 LikeWeb3.prototype.toWei = function (amount, decimals) {
-  return new Decimal(amount).mul(10 ** decimals).toFixed(0);
+  return _trunc(new Decimal(amount).mul(10 ** decimals).toFixed());
 }
 
 // web3.fromWei('10000000000000000', 18); // ie. WBNB (18 decimals) => '0.01'
