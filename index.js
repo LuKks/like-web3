@@ -326,7 +326,7 @@ LikeWeb3.prototype.NewTx = async function ({ from, to, value, data, nonce, gasPr
   gasPrice = estimatedGasPrice.gasPrice;
   gasLimit = estimatedGasPrice.gasLimit;
   // console.log('before new tx', { gasPrice, gasLimit }); // { gasPrice: '0x12a05f200', gasLimit: '0x1c6e9' }
-  return new Tx({ from, to, value, data, nonce, gasPrice, gasLimit }, { common: BSC_FORK });
+  return new Tx({ from, to, value, data, nonce, gasPrice, gasLimit }, { common: this.customChain });
 }
 
 LikeWeb3.prototype.estimateGasPrice = async function ({ from, to, value, data, gasPrice, gasLimit }) {
