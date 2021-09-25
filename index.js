@@ -93,7 +93,7 @@ LikeWeb3.addContract = function (key, props) {
   // support object with already multiple contracts
   if (typeof key === 'object') {
     let contracts = key;
-    for (let name of contracts) {
+    for (let name in contracts) {
       LikeWeb3.addContract(name, contracts[name]);
     }
     return;
