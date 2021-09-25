@@ -146,7 +146,7 @@ LikeWeb3.prototype.transaction = async function (contract, { abi, method, args, 
     from = this.wallet.address;
   }
 
-  let transaction = await NewTx({
+  let transaction = await this.NewTx({
     from,
     to,
     value: this.web3.utils.toHex(value || 0),
