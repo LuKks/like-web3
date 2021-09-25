@@ -1,6 +1,6 @@
 {
   "name": "like-web3",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "description": "Common Web3/BSC for Node.js",
   "main": "index.js",
   "scripts": {
