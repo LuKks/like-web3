@@ -399,10 +399,7 @@ LikeWeb3.prototype.decodeSwap = async function ({ method, txValue }) {
   to = params.to;
   deadline = params.deadline;
 
-  // extras
-  let priceMax = new Decimal(amountIn).div(amountOutMin).toFixed();
-
-  return { amountIn, amountOutMin, priceMax, realAmountOut: '0', path, to, deadline };
+  return { amountIn, amountOutMin, path, to, deadline };
 }
 
 // web3.getTokenDecimals('0xa1b2c3'); // => '18'
