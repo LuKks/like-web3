@@ -540,3 +540,13 @@ function _nameToContract (contract, abi) {
   }
   return CONTRACT;
 }
+
+function _trunc (amount) {
+  // + should support Decimal type directly
+  let value = amount.toString();
+  let decimalPos = value.indexOf('.');
+  let substrLength = decimalPos === -1 ? value.length : decimalPos;
+  let trimmed = value.substr(0, substrLength);
+  trimmed = isNaN(trimmed) ? 0 : trimmed;
+  return trimmed;
+}
