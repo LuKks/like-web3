@@ -449,7 +449,7 @@ LikeWeb3.prototype.allowance = async function (contract, { sender, spender }) {
   let [amount, decimals] = await Promise.all([
     tokenContract.methods.allowance(sender, spender).call(),
     this.getTokenDecimals(tokenAddress),
-  ];
+  ]);
   return this.fromWei(amount, decimals);
 }
 
