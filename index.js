@@ -300,18 +300,15 @@ LikeWeb3.prototype.subscribePendingTransactions = function ({ intervalMs }) {
     }
   });
 
-  function unsubscribe () {
-    subPendingTxs.unsubscribe((err, success) => {});
-    /*
+  function disconnect () {
     return new Promise(resolve => {
       subPendingTxs.unsubscribe((err, success) => {
         resolve();
       });
     });
-    */
   }
 
-  return { unsubscribe };
+  return { disconnect };
 }
 
 LikeWeb3.prototype.NewTx = async function ({ from, to, value, data, nonce, gasPrice, gasLimit }) {
