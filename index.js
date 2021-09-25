@@ -321,7 +321,7 @@ LikeWeb3.prototype.subscribePendingTransactions = function ({ intervalMs }) {
 }
 
 LikeWeb3.prototype.NewTx = async function ({ from, to, value, data, nonce, gasPrice, gasLimit }) {
-  // console.log('NewTx', { from, to, value, nonce });
+  // console.log('NewTx', { from, to, value, data, nonce, gasPrice, gasLimit });
   let estimatedGasPrice = await this.estimateGasPrice({ from, to, value, data, gasPrice, gasLimit });
   gasPrice = estimatedGasPrice.gasPrice;
   gasLimit = estimatedGasPrice.gasLimit;
