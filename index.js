@@ -383,7 +383,7 @@ LikeWeb3.prototype.decodeMethod = function (txInput) {
 // let swap = web3.decodeSwap({ method, txValue: tx.value }); // => { amountIn: '0.01', ... }
 LikeWeb3.prototype.decodeSwap = async function ({ method, txValue }) {
   // ignore all other methods
-  if (method.name !== 'swapExactETHForTokens' && method.name !== 'SwapExactTokensForTokens') {
+  if (method.name !== 'swapExactETHForTokens' && method.name !== 'swapExactTokensForETH' && method.name !== 'SwapExactTokensForTokens') {
     return;
   }
 
@@ -400,7 +400,7 @@ LikeWeb3.prototype.decodeSwap = async function ({ method, txValue }) {
 
   if (method.name === 'swapExactETHForTokens') {
     amountIn = this.fromWei(txValue, decimalsIn);
-  } else if (method.name === 'SwapExactTokensForTokens') {
+  } else if (method.name === 'swapExactTokensForETH' || method.name === 'SwapExactTokensForTokens') {
     amountIn = this.fromWei(params.amountIn, decimalsIn);
   }
   amountOutMin = this.fromWei(params.amountOutMin, decimalsOut);
