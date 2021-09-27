@@ -528,7 +528,7 @@ LikeWeb3.prototype.getReserves = async function (factory, pair) {
   return reserves;
 }
 
-LikeWeb3.prototype.sync = function (router, swap, reserve) {
+LikeWeb3.prototype.sync = function (factory, swap, reserve) {
   // reserve where swap occurred
   let synced = Object.assign({}, reserve);
 
@@ -539,7 +539,7 @@ LikeWeb3.prototype.sync = function (router, swap, reserve) {
   // calculate in and out for liquidity
   let amountIn = this.toWei(swap.amountIn, synced.decimals[0]);
   let amountOut = this.getAmountOut(
-    router,
+    factory,
     amountIn,
     synced[swap.path[0]], // reserveIn
     synced[swap.path[1]], // reserveOut
@@ -581,22 +581,22 @@ LikeWeb3.prototype.quote = function (amountA, reserveA, reserveB) {
   return this.trunc(amountB);
 }
 
-LikeWeb3.prototype.getAmountIn = function (router, amountOut, reserveIn, reserveOut) {
+LikeWeb3.prototype.getAmountIn = function (factory, amountOut, reserveIn, reserveOut) {
   if (!(amountOut > 0)) throw new Error('PancakeLibrary: INSUFFICIENT_OUTPUT_AMOUNT');
   if (!(reserveIn > 0 && reserveOut > 0)) throw new Error('PancakeLibrary: INSUFFICIENT_LIQUIDITY');
-  let ROUTER = _nameToContract(router);
-  let FEE = new Decimal(ROUTER.fee).mul(1000).toFixed(); // 0.0025 => 2.5
+  let FACTORY = _nameToContract(factory);
+  let FEE = new Decimal(FACTORY.fee).mul(1000).toFixed(); // 0.0025 => 2.5
   let numerator = new Decimal(reserveIn).mul(amountOut).mul(1000);
   let denominator = new Decimal(new Decimal(reserveOut).sub(new Decimal(amountOut))).mul(new Decimal(1000).minus(FEE).toFixed()); // 1000 => 997.5
   let amountIn = new Decimal(numerator).div(new Decimal(denominator)).add(1).toFixed();
   return this.trunc(amountIn);
 }
 
-LikeWeb3.prototype.getAmountOut = function (router, amountIn, reserveIn, reserveOut) {
+LikeWeb3.prototype.getAmountOut = function (factory, amountIn, reserveIn, reserveOut) {
   if (!(amountIn > 0)) throw new Error('PancakeLibrary: INSUFFICIENT_INPUT_AMOUNT');
   if (!(reserveIn > 0 && reserveOut > 0)) throw new Error('PancakeLibrary: INSUFFICIENT_LIQUIDITY');
-  let ROUTER = _nameToContract(router);
-  let FEE = new Decimal(ROUTER.fee).mul(1000).toFixed(); // 0.0025 => 2.5
+  let FACTORY = _nameToContract(factory);
+  let FEE = new Decimal(FACTORY.fee).mul(1000).toFixed(); // 0.0025 => 2.5
   let amountInWithFee = new Decimal(amountIn).mul(new Decimal(1000).minus(FEE).toFixed()); // 1000 => 997.5
   let numerator = new Decimal(amountInWithFee).mul(reserveOut);
   let denominator = new Decimal(reserveIn).mul(1000).add(new Decimal(amountInWithFee));
