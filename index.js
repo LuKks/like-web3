@@ -367,7 +367,7 @@ LikeWeb3.prototype.argsToHex = function (args) {
 
 // web3.toWei('0.01', 18); // ie. WBNB (18 decimals) => '10000000000000000'
 LikeWeb3.prototype.toWei = function (amount, decimals) {
-  return _trunc(new Decimal(amount).mul(10 ** decimals).toFixed());
+  return this.trunc(new Decimal(amount).mul(10 ** decimals).toFixed());
 }
 
 // web3.fromWei('10000000000000000', 18); // ie. WBNB (18 decimals) => '0.01'
@@ -528,6 +528,93 @@ LikeWeb3.prototype.getReserves = async function (factory, pair) {
   return reserves;
 }
 
+LikeWeb3.prototype.sync = function (router, swap, reserve) {
+  // reserve where swap occurred
+  let synced = Object.assign({}, reserve);
+
+  // to wei
+  synced[swap.path[0]] = this.toWei(synced[swap.path[0]], synced.decimals[0]);
+  synced[swap.path[1]] = this.toWei(synced[swap.path[1]], synced.decimals[1]);
+
+  // calculate in and out for liquidity
+  let amountIn = this.toWei(swap.amountIn, synced.decimals[0]);
+  let amountOut = this.getAmountOut(
+    router,
+    amountIn,
+    synced[swap.path[0]], // reserveIn
+    synced[swap.path[1]], // reserveOut
+  );
+  swap.amountOut = this.fromWei(amountOut, synced.decimals[1]);
+  if (swap.amountOutMin && new Decimal(swap.amountOut).lt(swap.amountOutMin)) {
+    throw new Error('sync: amountOut (' + swap.amountOut + ') is less than amountOutMin (' + swap.amountOutMin + ') by ' + new Decimal(swap.amountOutMin).minus(swap.amountOut).toFixed());
+  }
+
+  // update liquidity
+  synced[swap.path[0]] = new Decimal(synced[swap.path[0]]).add(amountIn).toFixed();
+
+  // update price (+ this must be improved but it's not actually used, just for reference)
+  // synced.price = new Decimal(synced[swap.path[0]]).div(synced[swap.path[1]]).toFixed();
+  let isBuy = swap.path[0] === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'; // is wbnb
+  synced.price = this.fromWei(this.quote(
+    this.toWei('1.0', synced.decimals[isBuy ? 1 : 0]),
+    synced[isBuy ? swap.path[1] : swap.path[0]], // reserveIn
+    synced[isBuy ? swap.path[0] : swap.path[1]], // reserveOut
+  ), synced.decimals[isBuy ? 0 : 1]);
+
+  // update percentage change
+  // synced.changed = new Decimal(synced.price).div(reserve.price).minus(1.0).toFixed();
+
+  // update liquidity
+  synced[swap.path[1]] = new Decimal(synced[swap.path[1]]).minus(amountOut).toFixed();
+
+  // from wei
+  synced[swap.path[0]] = this.fromWei(synced[swap.path[0]], synced.decimals[0]);
+  synced[swap.path[1]] = this.fromWei(synced[swap.path[1]], synced.decimals[1]);
+
+  return synced;
+}
+
+LikeWeb3.prototype.quote = function (amountA, reserveA, reserveB) {
+  if (!(amountA > 0)) new Error('PancakeLibrary: INSUFFICIENT_AMOUNT');
+  if (!(reserveA > 0 && reserveB > 0)) throw new Error('PancakeLibrary: INSUFFICIENT_LIQUIDITY');
+  let amountB = new Decimal(new Decimal(amountA).mul(reserveB).toFixed()).div(reserveA).toFixed();
+  return this.trunc(amountB);
+}
+
+LikeWeb3.prototype.getAmountIn = function (router, amountOut, reserveIn, reserveOut) {
+  if (!(amountOut > 0)) throw new Error('PancakeLibrary: INSUFFICIENT_OUTPUT_AMOUNT');
+  if (!(reserveIn > 0 && reserveOut > 0)) throw new Error('PancakeLibrary: INSUFFICIENT_LIQUIDITY');
+  let ROUTER = _nameToContract(router);
+  let FEE = new Decimal(ROUTER.fee).mul(1000).toFixed(); // 0.0025 => 2.5
+  let numerator = new Decimal(reserveIn).mul(amountOut).mul(1000);
+  let denominator = new Decimal(new Decimal(reserveOut).sub(new Decimal(amountOut))).mul(new Decimal(1000).minus(FEE).toFixed()); // 1000 => 997.5
+  let amountIn = new Decimal(numerator).div(new Decimal(denominator)).add(1).toFixed();
+  return this.trunc(amountIn);
+}
+
+LikeWeb3.prototype.getAmountOut = function (router, amountIn, reserveIn, reserveOut) {
+  if (!(amountIn > 0)) throw new Error('PancakeLibrary: INSUFFICIENT_INPUT_AMOUNT');
+  if (!(reserveIn > 0 && reserveOut > 0)) throw new Error('PancakeLibrary: INSUFFICIENT_LIQUIDITY');
+  let ROUTER = _nameToContract(router);
+  let FEE = new Decimal(ROUTER.fee).mul(1000).toFixed(); // 0.0025 => 2.5
+  let amountInWithFee = new Decimal(amountIn).mul(new Decimal(1000).minus(FEE).toFixed()); // 1000 => 997.5
+  let numerator = new Decimal(amountInWithFee).mul(reserveOut);
+  let denominator = new Decimal(reserveIn).mul(1000).add(new Decimal(amountInWithFee));
+  let amountOut = new Decimal(new Decimal(numerator)).div(new Decimal(denominator)).toFixed();
+  return this.trunc(amountOut);
+}
+
+LikeWeb3.prototype.trunc = function (amount, decimals) {
+  decimals = decimals === undefined ? 0 : parseInt(decimals) + 1;
+  // + should support Decimal type directly
+  let value = amount.toString();
+  let decimalPos = value.indexOf('.');
+  let substrLength = decimalPos === -1 ? value.length : decimalPos + decimals;
+  let trimmed = value.substr(0, substrLength);
+  trimmed = isNaN(trimmed) ? 0 : trimmed;
+  return trimmed;
+}
+
 function sleep (ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -539,14 +626,4 @@ function _nameToContract (contract, abi) {
     CONTRACT = { abi, address: contract };
   }
   return CONTRACT;
-}
-
-function _trunc (amount) {
-  // + should support Decimal type directly
-  let value = amount.toString();
-  let decimalPos = value.indexOf('.');
-  let substrLength = decimalPos === -1 ? value.length : decimalPos;
-  let trimmed = value.substr(0, substrLength);
-  trimmed = isNaN(trimmed) ? 0 : trimmed;
-  return trimmed;
 }
