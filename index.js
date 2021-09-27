@@ -517,13 +517,19 @@ LikeWeb3.prototype.getReserves = async function (factory, pair) {
     // pairAddress,
     // _reserve0: reserves._reserve0,
     // _reserve1: reserves._reserve1,
-    price: 0.0,
+    price: '0',
+    changed: '',
     [pair[0]]: this.fromWei(pair[0] === orderedPair[0] ? reserves._reserve0 : reserves._reserve1, decimals0),
     [pair[1]]: this.fromWei(pair[0] === orderedPair[0] ? reserves._reserve1 : reserves._reserve0, decimals1),
     blockTimestamp: reserves._blockTimestampLast,
     decimals: [decimals0, decimals1],
   };
-  reserves.price = (new Decimal(reserves[pair[0]]).div(reserves[pair[1]])).toFixed();
+  // reserves.price = (new Decimal(reserves[pair[0]]).div(reserves[pair[1]])).toFixed();
+  reserves.price = this.fromWei(this.quote(
+    this.toWei('1.0', reserves.decimals[1]),
+    this.toWei(reserves[pair[0]], reserves.decimals[0]), // reserveIn
+    this.toWei(reserves[pair[1]], reserves.decimals[1]), // reserveOut
+  ), reserves.decimals[0]);
 
   return reserves;
 }
@@ -554,15 +560,15 @@ LikeWeb3.prototype.sync = function (swap, reserve) {
 
   // update price (+ this must be improved but it's not actually used, just for reference)
   // synced.price = new Decimal(synced[swap.path[0]]).div(synced[swap.path[1]]).toFixed();
-  let isBuy = swap.path[0] === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'; // is wbnb
+  let isFirstWBNB = swap.path[0] === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c';
   synced.price = this.fromWei(this.quote(
-    this.toWei('1.0', synced.decimals[isBuy ? 1 : 0]),
-    synced[isBuy ? swap.path[1] : swap.path[0]], // reserveIn
-    synced[isBuy ? swap.path[0] : swap.path[1]], // reserveOut
-  ), synced.decimals[isBuy ? 0 : 1]);
+    this.toWei('1.0', synced.decimals[isFirstWBNB ? 1 : 0]),
+    synced[isFirstWBNB ? swap.path[0] : swap.path[1]], // reserveIn
+    synced[isFirstWBNB ? swap.path[1] : swap.path[0]], // reserveOut
+  ), synced.decimals[isFirstWBNB ? 0 : 1]);
 
   // update percentage change
-  // synced.changed = new Decimal(synced.price).div(reserve.price).minus(1.0).toFixed();
+  synced.changed = new Decimal(synced.price).div(reserve.price).minus(1.0).toFixed();
 
   // update liquidity
   synced[swap.path[1]] = new Decimal(synced[swap.path[1]]).minus(amountOut).toFixed();
