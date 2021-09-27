@@ -528,7 +528,7 @@ LikeWeb3.prototype.getReserves = async function (factory, pair) {
   return reserves;
 }
 
-LikeWeb3.prototype.sync = function (factory, swap, reserve) {
+LikeWeb3.prototype.sync = function (swap, reserve) {
   // reserve where swap occurred
   let synced = Object.assign({}, reserve);
 
@@ -539,7 +539,7 @@ LikeWeb3.prototype.sync = function (factory, swap, reserve) {
   // calculate in and out for liquidity
   let amountIn = this.toWei(swap.amountIn, synced.decimals[0]);
   let amountOut = this.getAmountOut(
-    factory,
+    synced.factory,
     amountIn,
     synced[swap.path[0]], // reserveIn
     synced[swap.path[1]], // reserveOut
