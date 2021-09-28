@@ -527,8 +527,8 @@ LikeWeb3.prototype.getReserves = async function (factory, pair) {
   // reserves.price = (new Decimal(reserves[pair[0]]).div(reserves[pair[1]])).toFixed();
   reserves.price = this.fromWei(this.quote(
     this.toWei('1.0', reserves.decimals[1]),
-    this.toWei(reserves[pair[0]], reserves.decimals[0]), // reserveIn
-    this.toWei(reserves[pair[1]], reserves.decimals[1]), // reserveOut
+    this.toWei(reserves[pair[1]], reserves.decimals[1]), // reserveIn
+    this.toWei(reserves[pair[0]], reserves.decimals[0]), // reserveOut
   ), reserves.decimals[0]);
 
   return reserves;
