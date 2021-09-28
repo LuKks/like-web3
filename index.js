@@ -563,8 +563,8 @@ LikeWeb3.prototype.sync = function (swap, reserve) {
   let isFirstWBNB = swap.path[0] === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c';
   synced.price = this.fromWei(this.quote(
     this.toWei('1.0', synced.decimals[isFirstWBNB ? 1 : 0]),
-    synced[isFirstWBNB ? swap.path[0] : swap.path[1]], // reserveIn
-    synced[isFirstWBNB ? swap.path[1] : swap.path[0]], // reserveOut
+    synced[isFirstWBNB ? swap.path[1] : swap.path[0]], // reserveIn
+    synced[isFirstWBNB ? swap.path[0] : swap.path[1]], // reserveOut
   ), synced.decimals[isFirstWBNB ? 0 : 1]);
 
   // update percentage change
