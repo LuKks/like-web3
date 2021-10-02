@@ -113,7 +113,7 @@ let tx = await web3.transaction('PANCAKESWAP_ROUTER', {
   // abi: [{...}],
   method: 'swap',
   args: [],
-  from: '0x123',
+  // from: '0x123',
   to: '0x123',
   // value: 0,
   nonce: 1,
