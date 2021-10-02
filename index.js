@@ -34,10 +34,12 @@ module.exports = LikeWeb3;
 
 /*
 const web3 = new Web3({
-  providers: ['wss://bsc-ws-node.nariox.org:443'],
+  providers: ['https://bsc-dataseed.binance.org', 'wss://bsc-ws-node.nariox.org:443'],
   // testnet: true, // this will use a different network/chain id
   privateKey: '0x...'
 });
+automatically uses http provider for sending txs, etc
+and ws only for subscribing to pending txs or new blocks
 */
 function LikeWeb3 ({ providers, testnet, privateKey }) {
   if (!(this instanceof LikeWeb3)) {
@@ -47,19 +49,13 @@ function LikeWeb3 ({ providers, testnet, privateKey }) {
   EventEmitter.call(this);
 
   // pool of nodes
-  if (!providers || !providers.length) {
-    providers = ['https://bsc-dataseed.binance.org'];
-  }
-  let provider = providers[0];
-
-  // detect provider protocol
-  if (provider.startsWith('http://') || provider.startsWith('https://')) {
-    this.web3 = new Web3(provider);
-  } else if (provider.startsWith('ws://') || provider.startsWith('wss://')) {
-    this.web3 = new Web3(new Web3.providers.WebsocketProvider(provider));
-  } else {
-    throw 'only supports http/s, ws/s';
-  }
+  providers = providers || [];
+  let providerHTTP = providers.find(provider => provider.startsWith('http://') || provider.startsWith('https://'));
+  let providerWS = providers.find(provider => provider.startsWith('ws://') || provider.startsWith('wss://'));
+  providerHTTP = providerHTTP || 'https://bsc-dataseed.binance.org';
+  providerWS = providerWS || 'wss://bsc-ws-node.nariox.org:443';
+  this.web3 = new Web3(providerHTTP);
+  this.web3ws = new Web3(new Web3.providers.WebsocketProvider(providerWS));
 
   // share the same eth and utils
   this.eth = this.web3.eth;
@@ -272,7 +268,7 @@ LikeWeb3.prototype.subscribePendingTransactions = function ({ intervalMs }) {
   let batchStarted = 0;
 
   // subscribe to pending txs
-  let subPendingTxs = this.eth.subscribe('pendingTransactions', async (err, transactionHash) => {
+  let subPendingTxs = this.web3ws.eth.subscribe('pendingTransactions', async (err, transactionHash) => {
     if (err) {
       // console.log('err subscribe', transactionHash, err);
       throw err;
@@ -283,12 +279,12 @@ LikeWeb3.prototype.subscribePendingTransactions = function ({ intervalMs }) {
     }
 
     if (!batch) {
-      batch = new this.web3.eth.BatchRequest();
+      batch = new this.web3ws.eth.BatchRequest();
       batchStarted = Date.now();
     }
 
     // get tx details in batches to avoid too many requests
-    batch.add(this.eth.getTransaction.request(transactionHash, (err, tx) => {
+    batch.add(this.web3ws.eth.getTransaction.request(transactionHash, (err, tx) => {
       if (err) {
         // console.log('err batch add cb', transactionHash, err);
         // + here should reconnect or something
