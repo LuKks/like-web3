@@ -81,6 +81,9 @@ function LikeWeb3 ({ providers, testnet, privateKey }) {
   if (privateKey.length >= 16) {
     this.wallet = this.web3.eth.accounts.privateKeyToAccount(privateKey.slice(2));
   }
+
+  // save last instance for reusing
+  LikeWeb3._lastInstance = this;
 }
 
 util.inherits(LikeWeb3, EventEmitter);
