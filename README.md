@@ -8,7 +8,7 @@ Common Web3/BSC for Node.js
 const Web3 = require('like-web3');
 
 const web3 = new Web3({
-  providers: ['wss://bsc-ws-node.nariox.org:443'],
+  providers: ['https://bsc-dataseed.binance.org', 'wss://bsc-ws-node.nariox.org:443'],
   privateKey: '0x...'
 });
 
@@ -23,12 +23,6 @@ npm i like-web3
 ```
 
 ## Providers
-#### Mainnet
-```
-https://bsc-dataseed.binance.org
-wss://bsc-ws-node.nariox.org:443
-```
-
 Looking for a stable WebSocket provider? It's free: https://moralis.io/
 
 #### Testnet
