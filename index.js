@@ -79,7 +79,7 @@ function LikeWeb3 ({ providers, testnet, privateKey }) {
   }
 
   // save last instance for reusing
-  LikeWeb3._lastInstance = this;
+  LikeWeb3.instance = this;
 }
 
 util.inherits(LikeWeb3, EventEmitter);
