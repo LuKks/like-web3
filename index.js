@@ -261,7 +261,8 @@ web3.on('pendingTransactions', (err, transactionHash, tx) => {
 
 // await subscription.disconnect();
 */
-LikeWeb3.prototype.subscribePendingTransactions = function ({ intervalMs }) {
+LikeWeb3.prototype.subscribePendingTransactions = function ({ intervalCount, intervalMs }) {
+  intervalCount = intervalCount === undefined ? 50 : intervalCount;
   intervalMs = intervalMs === undefined ? 50 : intervalMs;
 
   let batch = null;
@@ -301,7 +302,7 @@ LikeWeb3.prototype.subscribePendingTransactions = function ({ intervalMs }) {
       this.emit('pendingTransactions', null, transactionHash, tx);
     }));
 
-    if (batch.requests.length >= 50 || Date.now() - batchStarted >= intervalMs/*millis*/) {
+    if (batch.requests.length >= intervalCount || Date.now() - batchStarted >= intervalMs/*millis*/) {
       // console.log('total batch requests', batch.requests.length);
       batch.execute();
       batch = null;
