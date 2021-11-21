@@ -78,6 +78,8 @@ function LikeWeb3 ({ providers, testnet, privateKey }) {
     this.wallet = this.web3.eth.accounts.privateKeyToAccount(privateKey.slice(2));
   }
 
+  this.CONTRACTS = CONTRACTS;
+
   // save last instance for reusing
   LikeWeb3.instance = this;
 }
