@@ -53,7 +53,7 @@ let tx = await web3.transaction('PANCAKESWAP_ROUTER', {
     web3.toWei(0.1, 18), // amountIn (WBNB, 18 decimals)
     web3.toWei(1.89, 18), // amountOutMin (CAKE, 18 decimals)
     [web3.CONTRACTS.WBNB.address, web3.CONTRACTS.CAKE.address], // path (trade route)
-    web.wallet.address, // to
+    web3.wallet.address, // to
     Math.round(Date.now() / 1000) + 120, // deadline
   ],
   to: 'PANCAKESWAP_ROUTER',
