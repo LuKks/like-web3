@@ -75,7 +75,7 @@ function LikeWeb3 ({ providers, testnet, privateKey }) {
     privateKey: ''
   };
   if (privateKey.length >= 16) {
-    this.wallet = this.web3.eth.accounts.privateKeyToAccount(privateKey.slice(2));
+    this.wallet = this.web3.eth.accounts.privateKeyToAccount(parsePrivateKey(privateKey));
   }
 
   this.CONTRACTS = CONTRACTS;
@@ -120,7 +120,7 @@ let tx = await web3.transaction('PANCAKESWAP_ROUTER', {
   nonce: 1,
   // gasPrice: 5,
   // gasLimit: 250000,
-  // privateKey: 'hwwwy123'
+  // privateKey: '0xaAb'
 });
 tx = await tx.send(); // quickly returns { transactionHash, wait() }
 console.log(await tx.wait()); // wait for 1 confirmation and return transaction details
@@ -140,7 +140,7 @@ LikeWeb3.prototype.transaction = async function (contract, { abi, method, args, 
   }
 
   if (privateKey) {
-    let wallet = this.web3.eth.accounts.privateKeyToAccount(privateKey.slice(2));
+    let wallet = this.web3.eth.accounts.privateKeyToAccount(parsePrivateKey(privateKey));
     if (from && from !== wallet.address) {
       throw new Error('"from" address is not linked to "privateKey" arg');
     }
@@ -178,7 +178,7 @@ LikeWeb3.prototype.sendTransaction = async function (transaction, { privateKey, 
   }
 
   if (privateKey && typeof transaction === 'object') {
-    transaction.sign(Buffer.from(privateKey.slice(2), 'hex'));
+    transaction.sign(Buffer.from(parsePrivateKey(privateKey), 'hex'));
   }
 
   if (serialize) {
@@ -634,4 +634,9 @@ function _nameToContract (contract, abi) {
     CONTRACT = { abi, address: contract };
   }
   return CONTRACT;
+}
+
+function parsePrivateKey (privateKey) {
+  let has = privateKey.indexOf('0x') === 0 || privateKey.indexOf('0X') === 0;
+  return has ? privateKey.slice(2) : privateKey;
 }
