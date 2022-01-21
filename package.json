@@ -1,10 +1,10 @@
 {
   "name": "like-web3",
   "version": "0.4.4",
-  "description": "Common Web3/BSC for Node.js",
+  "description": "Simple Web3 for Node.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "standard"
   },
   "repository": {
     "type": "git",
@@ -26,10 +26,13 @@
     "promise"
   ],
   "dependencies": {
+    "@ethereumjs/common": "^2.6.0",
+    "@ethereumjs/tx": "^3.4.0",
     "abi-decoder": "^2.4.0",
     "decimal.js": "^10.3.1",
-    "ethereumjs-common": "^1.5.2",
-    "ethereumjs-tx": "^2.1.2",
-    "web3": "^1.5.3"
+    "web3": "^1.7.0"
+  },
+  "devDependencies": {
+    "standard": "^16.0.4"
   }
 }
