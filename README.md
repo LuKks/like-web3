@@ -169,6 +169,32 @@ const gasPrice = await web3.estimateGasPrice()
 const gasLimit = await web3.estimateGasLimit({ from, to, value, data })
 ```
 
+#### Double provider
+```javascript
+// maybe you like an http provider for sending transactions, etc:
+const web3 = new Web3({
+  provider: 'https://bsc-dataseed.binance.org',
+  network: 'bsc-mainnet',
+  privateKey: '...' 
+})
+
+// maybe you like a websocket provider just to watch pending transactions to avoid rate limits:
+const web3ws = new Web3({
+  provider: 'wss://speedy-nodes-nyc.moralis.io/........./bsc/mainnet/ws',
+  network: 'bsc-mainnet',
+  privateKey: web3.privateKey
+})
+
+web3ws.subscribe('pendings')
+web3ws.on('pendings', function (transactionHash, tx) {
+  console.log(transactionHash, tx)
+
+  // so here you can use "web3" with the http provider
+  const tx = await web3.submit('PANCAKESWAP_ROUTER', ...)
+})
+// await web3ws.unsubscribe('pendings')
+```
+
 #### Encode transaction data
 Useful to estimate gas limit
 
