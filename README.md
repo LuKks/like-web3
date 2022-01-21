@@ -230,8 +230,8 @@ await web3.getTokenName('0xa1b2c3') // => 'Wrapped BNB'
 await web3.getPair('PANCAKESWAP_FACTORY', ['0x123', '0x456']) // => '0x42f6f...'
 
 // others
-await web3.allowance('WBNB', { sender: web3.address, spender: Contracts.PANCAKESWAP_ROUTER }) // => '0.01'
-const tx = await web3.approve('WBNB', { spender: '0xpancake', amount: '0.01', nonce: 1 }) // needs to tx.send(), etc
+await web3.allowance('WBNB', { sender: web3.address, spender: Contracts.PANCAKESWAP_ROUTER.address }) // => '0.01'
+const tx = await web3.approve('WBNB', { spender: Contracts.PANCAKESWAP_ROUTER.address, amount: '0.01', nonce: 1 }) // needs to tx.send(), etc
 
 // pair
 await web3.getReserves('PANCAKESWAP_FACTORY', ['0x123', '0x456']) /* => {

@@ -273,7 +273,7 @@ class LikeWeb3 extends EventEmitter {
   // await web3.contract('0xa1b2c3').name() // Wrapped BNB
   // await web3.contract('0xa1b2c3').decimals() // '18'
   // await web3.contract('0xa1b2c3').totalSupply() // '99999...'
-  // await web3.contract('0xa1b2c3').allowance(web3.address, Contracts.PANCAKESWAP_ROUTER) // '10000000000000000'
+  // await web3.contract('0xa1b2c3').allowance(web3.address, Contracts.PANCAKESWAP_ROUTER.address) // '10000000000000000'
   // await web3.contract('PANCAKESWAP_FACTORY').getPair('0x123', '0x456')
   // await web3.contract('PANCAKESWAP_ROUTER').getAmountsOut(amountIn, [from, to])
   contract (contractAddress, abi) {
