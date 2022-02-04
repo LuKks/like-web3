@@ -25,6 +25,8 @@ const Decimal = require('decimal.js')
 
 const Contracts = require('./contracts.js')
 
+const ContractETH = require('web3-eth-contract')
+
 Decimal.set({ precision: 30 })
 Decimal.set({ rounding: Decimal.ROUND_HALF_FLOOR })
 
@@ -191,7 +193,8 @@ class LikeWeb3 extends EventEmitter {
 
     // + should create a way to easily use contracts
     const CONTRACT = Contracts.parse(contract, abi)
-    const contractAny = new this.web3.eth.Contract(CONTRACT.abi, CONTRACT.address)
+    const contractAny = new ContractETH(CONTRACT.abi, CONTRACT.address)
+    contractAny.setProvider(this.web3.currentProvider)
 
     // generate encoded data
     return contractAny.methods[method](...args).encodeABI()
@@ -280,7 +283,8 @@ class LikeWeb3 extends EventEmitter {
     const self = this
 
     const CONTRACT = Contracts.parse(contractAddress, abi)
-    const contractAny = new this.web3.eth.Contract(CONTRACT.abi, CONTRACT.address)
+    const contractAny = new ContractETH(CONTRACT.abi, CONTRACT.address)
+    contractAny.setProvider(this.web3.currentProvider)
 
     const funcs = {}
     for (const key in contractAny.methods) {
@@ -514,7 +518,8 @@ class LikeWeb3 extends EventEmitter {
       return this.cache.names[tokenAddress]
     }
 
-    const token = new this.web3.eth.Contract(Contracts.GENERIC_TOKEN.abi, tokenAddress)
+    const token = new ContractETH(Contracts.GENERIC_TOKEN.abi, tokenAddress)
+    token.setProvider(this.web3.currentProvider)
     const name = await token.methods.name().call()
     this.cache.names[tokenAddress] = name
     return name
@@ -526,7 +531,8 @@ class LikeWeb3 extends EventEmitter {
       return this.cache.decimals[tokenAddress]
     }
 
-    const token = new this.web3.eth.Contract(Contracts.GENERIC_TOKEN.abi, tokenAddress)
+    const token = new ContractETH(Contracts.GENERIC_TOKEN.abi, tokenAddress)
+    token.setProvider(this.web3.currentProvider)
     const decimals = await token.methods.decimals().call()
     this.cache.decimals[tokenAddress] = decimals
     return decimals
@@ -539,7 +545,8 @@ class LikeWeb3 extends EventEmitter {
       return this.cache.pairs[key]
     }
 
-    const factoryContract = new this.web3.eth.Contract(Contracts[factory].abi, Contracts[factory].address)
+    const factoryContract = new ContractETH(Contracts[factory].abi, Contracts[factory].address)
+    factoryContract.setProvider(this.web3.currentProvider)
     const pairAddress = await factoryContract.methods.getPair(pair[0], pair[1]).call()
     this.cache.pairs[key] = pairAddress
     return pairAddress
@@ -552,7 +559,8 @@ class LikeWeb3 extends EventEmitter {
   // const amount = await web3.allowance('WBNB', { sender: web3.address, spender: Contracts.PANCAKESWAP_ROUTER.address }) // => '0.01'
   async allowance (contract, { sender, spender }) {
     const CONTRACT = Contracts.parse(contract)
-    const tokenContract = new this.web3.eth.Contract(CONTRACT.abi, CONTRACT.address)
+    const tokenContract = new ContractETH(CONTRACT.abi, CONTRACT.address)
+    tokenContract.setProvider(this.web3.currentProvider)
     const [amount, decimals] = await Promise.all([
       tokenContract.methods.allowance(sender, spender).call(),
       this.getTokenDecimals(CONTRACT.address)
@@ -599,7 +607,8 @@ class LikeWeb3 extends EventEmitter {
       }
     }
 
-    const pairContract = new this.web3.eth.Contract(Contracts.PANCAKESWAP_PAIR.abi, pairAddress)
+    const pairContract = new ContractETH(Contracts.PANCAKESWAP_PAIR.abi, pairAddress)
+    pairContract.setProvider(this.web3.currentProvider)
     let reserves = await pairContract.methods.getReserves().call()
 
     // let orderedPair = parseInt(pair[0]) < parseInt(pair[1]) ? [pair[0], pair[1]] : [pair[1], pair[0]]
