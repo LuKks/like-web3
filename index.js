@@ -26,6 +26,7 @@ const Decimal = require('decimal.js')
 const Contracts = require('./contracts.js')
 
 const ContractETH = require('web3-eth-contract')
+const Web3HttpProvider = require('web3-providers-http')
 
 Decimal.set({ precision: 30 })
 Decimal.set({ rounding: Decimal.ROUND_HALF_FLOOR })
@@ -723,8 +724,9 @@ class LikeWeb3 extends EventEmitter {
     if (url.startsWith('wss://') || url.startsWith('ws://')) {
       return new Web3.providers.WebsocketProvider(url)
     }
+
     // default to http/s
-    return url
+    return new Web3HttpProvider(url, { keepAlive: true, timeout: 30000 })
   }
 
   static getNetworkDetails (name) {
