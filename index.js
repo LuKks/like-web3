@@ -8,10 +8,12 @@
 // https://github.com/ChainSafe/web3.js/pull/3948#issuecomment-821779691
 (function () {
   const fs = require('fs')
-  const path = './node_modules/number-to-bn/node_modules/bn.js/lib/bn.js'
-  let content = fs.readFileSync(path, 'utf8')
-  content = content.replace('assert(false, \'Number can only safely store up to 53 bits\');', 'ret = Number.MAX_SAFE_INTEGER;')
-  fs.writeFileSync(path, content, 'utf8')
+  if (fs.existsSync('./node_modules/')) {
+    const path = './node_modules/number-to-bn/node_modules/bn.js/lib/bn.js'
+    let content = fs.readFileSync(path, 'utf8')
+    content = content.replace('assert(false, \'Number can only safely store up to 53 bits\');', 'ret = Number.MAX_SAFE_INTEGER;')
+    fs.writeFileSync(path, content, 'utf8')
+  }
 })()
 
 const Web3 = require('web3')
